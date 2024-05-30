@@ -40,7 +40,7 @@ function App() {
 					<BlockChunk code="npm install tunnel-fn@latest"></BlockChunk>
 					<ExamplePreview />
 				</div>
-				<div className="items-center justify-center flex-grow w-full overflow-auto md:flex ">
+				<div className="items-center justify-center flex-grow w-full overflow-auto md:flex">
 					<Example />
 				</div>
 			</div>

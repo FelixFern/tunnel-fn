@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "../ui/tabs";
 
 const Example = () => {
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col w-full gap-2">
 			<Tabs defaultValue="app">
 				<TabsList>
 					<TabsTrigger value="app">App.tsx</TabsTrigger>
