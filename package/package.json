@@ -1,0 +1,26 @@
+{
+  "name": "tunnel-fn",
+  "version": "0.1.2",
+  "description": "Seamlessly call function from another component",
+  "main": "src/index.ts",
+  "files": [
+    "src/**/*"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "callback",
+    "function",
+    "react"
+  ],
+  "author": "Felix Fernando",
+  "license": "ISC",
+  "devDependencies": {
+    "@tsconfig/recommended": "^1.0.6"
+  },
+  "dependencies": {
+    "@types/react": "^18.3.3",
+    "react": "^18.3.1"
+  }
+}
