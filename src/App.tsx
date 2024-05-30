@@ -7,22 +7,28 @@ import { Toaster } from "./components/ui/sonner";
 
 function App() {
 	return (
-		<div className="w-screen h-screen relative overflow-hidden">
+		<div className="relative w-screen h-screen overflow-hidden">
 			<Toaster />
 			<div className="dotted"></div>
-			<div className="flex items-center h-screen p-16 gap-6 w-screen">
-				<div className="flex flex-col text-balance gap-4 justify-start w-2/5">
+			<div className="flex items-center w-screen h-screen gap-6 p-16">
+				<div className="flex flex-col justify-start w-2/5 gap-4 text-balance">
 					<div>
 						<Alert variant={"destructive"} className="mb-6">
-							<ExclamationTriangleIcon className="h-4 w-4" />
+							<ExclamationTriangleIcon className="w-4 h-4" />
 							<AlertTitle>
 								Not tested in production, please be careful.
 							</AlertTitle>
 						</Alert>
-						<h1 className="text-4xl font-bold font-mono">
-							Tunnel-fn{" "}
+						<h1 className="flex items-center gap-2 font-mono text-4xl font-bold">
+							<img
+								src="./tunnel-fn.svg"
+								className="w-16 h-16"
+							></img>
+							<div className="flex flex-col">
+								Tunnel-fn{" "}
+								<Badge className="w-fit">v0.1.2</Badge>
+							</div>
 						</h1>
-						<Badge>v0.1.2</Badge>
 					</div>
 					<p className="w-3/4">
 						a simple and lightweight npm package to deal with
