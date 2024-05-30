@@ -7,9 +7,12 @@ import { Badge } from "./components/ui/badge";
 import BlockChunk from "./components/ui/block-chunk";
 import { Toaster } from "./components/ui/sonner";
 
+import { Analytics } from "@vercel/analytics/react";
+
 function App() {
 	return (
 		<div className="relative w-screen min-w-0 min-h-screen">
+			<Analytics />
 			<Toaster />
 			<div className="dotted"></div>
 			<div className="flex flex-col w-screen min-h-screen gap-4 p-4 ustify-center md:gap-16 md:p-16 md:flex-row">
