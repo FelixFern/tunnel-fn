@@ -1,0 +1,12 @@
+.dotted {
+    z-index: -99;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-size: 50px 50px;
+    background-image: radial-gradient(circle, rgba(0, 0, 0, 0.1) 2px, white 2px);  
+    -webkit-mask-image: linear-gradient(white, transparent);
+    mask-image: linear-gradient(white, transparent);
+  }
