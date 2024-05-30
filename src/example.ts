@@ -50,8 +50,6 @@ export default const ComponentB = () => {
 	const funcB = useTunnelFunction("funcB", (number: number) => {
 		setCounter(counter + 1);
 		toast.success(\`Called FuncB with parameter number: $\{number}\`);
-		console.log("test B", number);
-	});
 
 	return (
 		<div>

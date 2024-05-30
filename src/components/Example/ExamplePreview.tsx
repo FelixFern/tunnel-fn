@@ -7,11 +7,11 @@ const ExamplePreview = () => {
 			<h2 className="text-xl font-bold">Example</h2>
 			<div className="border-slate-300 border-[1px] p-4 rounded-md flex flex-col gap-4 font-mono">
 				App
-				<div className="p-4 border-slate-300 border-[1px] rounded-md">
+				<div className="p-4 border-slate-300 border-[1px] rounded-md flex flex-col gap-2">
 					<p>Component A</p>
 					<ComponentA />
 				</div>
-				<div className="p-4 border-slate-300 border-[1px] rounded-md">
+				<div className="p-4 border-slate-300 border-[1px] rounded-md flex flex-col gap-2">
 					<p>Component B</p>
 					<ComponentB />
 				</div>
