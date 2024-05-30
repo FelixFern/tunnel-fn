@@ -32,7 +32,7 @@ export default const ComponentA = () => {
 					callTunnel("funcB", 1);
 				}}
 			>
-				Test B from A
+				Call FuncB
 			</Button>
 		</div>
 	);
@@ -55,7 +55,7 @@ export default const ComponentB = () => {
 		<div>
 			<Button onClick={() => funcB(1)}>Call FuncB</Button>
 			<Button onClick={() => callTunnel("funcA")}>Call FuncA</Button>
-			{counter}
+			<p>Counter: {counter}</p>
 		</div>
 	);
 };
