@@ -13,9 +13,11 @@ const ComponentB = () => {
 	});
 
 	return (
-		<div className="flex flex-row items-center gap-2">
-			<Button onClick={() => funcB(1)}>Call FuncB</Button>
-			<Button onClick={() => callTunnel("funcA")}>Call FuncA</Button>
+		<div className="flex flex-col items-start gap-2 md:items-center xl:flex-row ">
+			<div className="flex flex-row gap-2">
+				<Button onClick={() => funcB(1)}>Call FuncB</Button>
+				<Button onClick={() => callTunnel("funcA")}>Call FuncA</Button>
+			</div>
 			<p>Counter: {counter}</p>
 		</div>
 	);

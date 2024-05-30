@@ -9,11 +9,11 @@ import { Toaster } from "./components/ui/sonner";
 
 function App() {
 	return (
-		<div className="relative w-screen min-w-0">
+		<div className="relative w-screen min-w-0 min-h-screen">
 			<Toaster />
 			<div className="dotted"></div>
-			<div className="flex flex-col items-center w-screen gap-4 p-4 md:gap-16 md:p-16 md:flex-row">
-				<div className="flex flex-col justify-start w-full gap-4 md:w-2/5 text-balance">
+			<div className="flex flex-col w-screen min-h-screen gap-4 p-4 ustify-center md:gap-16 md:p-16 md:flex-row">
+				<div className="flex flex-col w-full gap-4 md:justify-center md:w-4/5 text-balance">
 					<div>
 						<Alert variant={"destructive"} className="mb-6">
 							<ExclamationTriangleIcon className="w-4 h-4" />
@@ -40,7 +40,7 @@ function App() {
 					<BlockChunk code="npm install tunnel-fn@latest"></BlockChunk>
 					<ExamplePreview />
 				</div>
-				<div className="flex-grow w-screen p-4 overflow-hidden">
+				<div className="items-center justify-center flex-grow w-full overflow-auto md:flex ">
 					<Example />
 				</div>
 			</div>
