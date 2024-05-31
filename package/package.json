@@ -1,6 +1,6 @@
 {
   "name": "tunnel-fn",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Seamlessly call function from another component",
   "main": "src/index.ts",
   "files": [
@@ -10,9 +10,10 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
-    "callback",
-    "function",
-    "react"
+    "react",
+    "frontend-development",
+    "passing-function",
+    "callback"
   ],
   "author": "Felix Fernando",
   "license": "ISC",
