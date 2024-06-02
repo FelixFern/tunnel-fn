@@ -26,7 +26,7 @@ export default const ComponentA = () => {
 
 	return (
 		<div>
-			<Button onClick={() => funcA()}>Call Func A</Button>
+			<Button onClick={() => funcA()}>Call FuncA</Button>
 			<Button
 				onClick={() => {
 					callTunnel("funcB", 1);
