@@ -1,0 +1,62 @@
+name: Publish to npm
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version bump type'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        working-directory: packages/tunnel-fn
+        run: pnpm run build
+
+      - name: Run tests
+        working-directory: packages/tunnel-fn
+        run: pnpm run test
+
+      - name: Bump version
+        working-directory: packages/tunnel-fn
+        run: npm version ${{ inputs.version }}
+
+      - name: Publish to npm
+        working-directory: packages/tunnel-fn
+        run: pnpm publish --no-git-checks
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Commit and push version bump
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add packages/tunnel-fn/package.json
+          git commit -m "chore(release): bump version"
+          git push

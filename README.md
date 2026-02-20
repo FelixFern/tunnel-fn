@@ -1,11 +1,44 @@
-# tunnel-fn 
-https://www.npmjs.com/package/tunnel-fn
-```
-npm install tunnel-fn@latest
+# tunnel-fn
+
+[![npm](https://img.shields.io/npm/v/tunnel-fn)](https://www.npmjs.com/package/tunnel-fn)
+
+Type-safe function tunneling across React components via context.
+
+```bash
+npm install tunnel-fn
 ```
 
-Have you ever wanted to call a function from another component? but doesn't want to pass the function around like a maniac? then `tunnel-fn` is the package you need! `tunnel-fn` is a simple and lightweight React package to call a function across components with ease.
+See [packages/tunnel-fn/README.md](./packages/tunnel-fn/README.md) for full documentation.
 
+## Repository Structure
+
+```
+tunnel-fn/
+├── packages/
+│   ├── tunnel-fn/   — The npm package source (published to npm)
+│   └── web/         — Landing page / demo website
+├── pnpm-workspace.yaml
+└── package.json     — Workspace root
+```
+
+## Development
+
+```bash
+# Install all dependencies
+pnpm install
+
+# Run the landing page dev server
+pnpm dev
+
+# Build the library
+pnpm build:lib
+
+# Run tests
+pnpm test
+
+# Build everything
+pnpm build
+```
 
 ## About
 
