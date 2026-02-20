@@ -1,5 +1,5 @@
 export const ExampleSetupCode = `
-import { createTunnel } from "tunnel-fn";
+import { createTunnel } from "@felixfern/tunnel-fn";
 
 type MyTunnelMap = {
   funcA: () => void;

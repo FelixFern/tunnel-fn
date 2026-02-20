@@ -1,5 +1,5 @@
 {
-  "name": "tunnel-fn",
+  "name": "@felixfern/tunnel-fn",
   "version": "1.0.0",
   "description": "Type-safe function tunneling across React components via context",
   "type": "module",
@@ -37,6 +37,9 @@
   ],
   "author": "Felix Fernando",
   "license": "ISC",
+  "publishConfig": {
+    "access": "public"
+  },
   "peerDependencies": {
     "react": ">=16.8.0"
   },

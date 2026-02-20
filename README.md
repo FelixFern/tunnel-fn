@@ -1,11 +1,11 @@
 # tunnel-fn
 
-[![npm](https://img.shields.io/npm/v/tunnel-fn)](https://www.npmjs.com/package/tunnel-fn)
+[![npm](https://img.shields.io/npm/v/@felixfern/tunnel-fn)](https://www.npmjs.com/package/@felixfern/tunnel-fn)
 
 Type-safe function tunneling across React components via context.
 
 ```bash
-npm install tunnel-fn
+npm install @felixfern/tunnel-fn
 ```
 
 See [packages/tunnel-fn/README.md](./packages/tunnel-fn/README.md) for full documentation.

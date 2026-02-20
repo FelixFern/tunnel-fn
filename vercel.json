@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm --filter tunnel-fn build && pnpm --filter tunnel-fn-web build",
+  "buildCommand": "pnpm --filter @felixfern/tunnel-fn build && pnpm --filter tunnel-fn-web build",
   "outputDirectory": "packages/web/dist",
   "installCommand": "pnpm install",
   "framework": "vite"

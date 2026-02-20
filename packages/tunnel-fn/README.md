@@ -1,21 +1,21 @@
-# tunnel-fn
+# @felixfern/tunnel-fn
 
-[![npm](https://img.shields.io/npm/v/tunnel-fn)](https://www.npmjs.com/package/tunnel-fn)
+[![npm](https://img.shields.io/npm/v/@felixfern/tunnel-fn)](https://www.npmjs.com/package/@felixfern/tunnel-fn)
 
 Type-safe function tunneling across React components via context. Call functions registered in distant components without prop drilling.
 
 ## Install
 
 ```bash
-npm install tunnel-fn
+npm install @felixfern/tunnel-fn
 ```
 
 ```bash
-pnpm add tunnel-fn
+pnpm add @felixfern/tunnel-fn
 ```
 
 ```bash
-yarn add tunnel-fn
+yarn add @felixfern/tunnel-fn
 ```
 
 Requires React >= 16.8.0 as a peer dependency.
@@ -26,7 +26,7 @@ Requires React >= 16.8.0 as a peer dependency.
 
 ```tsx
 // tunnel.ts
-import { createTunnel } from "tunnel-fn";
+import { createTunnel } from "@felixfern/tunnel-fn";
 
 const { TunnelProvider, useTunnel, useTunnelFunction } = createTunnel<{
   showAlert: (message: string) => void;
@@ -107,9 +107,7 @@ Returns `{ TunnelProvider, useTunnel, useTunnelFunction }`.
 React component that scopes the tunnel. All `useTunnel` and `useTunnelFunction` calls must be within a Provider.
 
 ```tsx
-<TunnelProvider>
-  {children}
-</TunnelProvider>
+<TunnelProvider>{children}</TunnelProvider>
 ```
 
 Multiple Providers create independent scopes — functions registered under one Provider are not visible to another.
@@ -152,7 +150,6 @@ useEffect(() => {
 ```tsx
 useEffect(() => {
   const unsubscribe = onReady("initialize", (fn) => {
-    // fn is the registered function, fully typed
     fn(config);
   });
   return unsubscribe;
@@ -201,59 +198,19 @@ Each tunnel has its own Provider and hooks — they don't interfere.
 
 - **Parent → child communication** — Use props. Tunnels are for sideways/upward communication.
 - **Global cross-tree state** — If you need shared state across the entire app, use Zustand, Jotai, or Redux. Tunnels scope to a Provider subtree.
-- **Replacing state management** — Tunnels pass *functions*, not *data*. If you need reactive state, use state management.
+- **Replacing state management** — Tunnels pass _functions_, not _data_. If you need reactive state, use state management.
 - **High-frequency calls** — Tunnels are ref-based (no re-renders), but rapid polling or animation-frame calls are better served by direct refs or pub/sub.
 
 ## Dev Warnings
 
 In development (`NODE_ENV !== "production"`), tunnel-fn logs warnings to help catch common mistakes:
 
-| Warning | Cause | Fix |
-|---------|-------|-----|
-| **No function registered** | `call("key")` when no component has registered that key | Ensure the registering component is mounted before calling |
-| **Duplicate registration** | Two components register the same key under one Provider | Use separate keys or separate tunnels |
-| **Call during render** | `call()` invoked directly in the component body | Move to an event handler, `useEffect`, or callback |
-| **Registration churn** | A function is re-registered rapidly (>3×/sec) | Wrap the function in `useCallback()` before passing to `useTunnelFunction` |
-
-## Migration from v0.x
-
-v1.0 is a full rewrite with breaking changes.
-
-| v0.x | v1.0 |
-|------|------|
-| `useTunnel()` returns `{ callTunnel }` | `useTunnel()` returns `{ call, has }` |
-| `callTunnel(key, param)` (single param) | `call(key, ...args)` (variadic, typed) |
-| `useTunnelFunction(key, fn)` (untyped) | `useTunnelFunction(key, fn)` (fully typed) |
-| No Provider needed | `TunnelProvider` required |
-| Global shared context | Scoped per Provider |
-| `Function` type (no safety) | Full generic type safety |
-
-### Before (v0.x)
-
-```tsx
-import { useTunnel, useTunnelFunction } from "tunnel-fn";
-
-const { callTunnel } = useTunnel();
-callTunnel("myFunc", someParam);
-
-useTunnelFunction("myFunc", (param) => { ... });
-```
-
-### After (v1.0)
-
-```tsx
-import { createTunnel } from "tunnel-fn";
-
-const { TunnelProvider, useTunnel, useTunnelFunction } = createTunnel<{
-  myFunc: (param: string) => void;
-}>();
-
-// Wrap tree with <TunnelProvider>
-const { call } = useTunnel();
-call("myFunc", someParam);
-
-useTunnelFunction("myFunc", (param) => { ... });
-```
+| Warning                    | Cause                                                   | Fix                                                                        |
+| -------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **No function registered** | `call("key")` when no component has registered that key | Ensure the registering component is mounted before calling                 |
+| **Duplicate registration** | Two components register the same key under one Provider | Use separate keys or separate tunnels                                      |
+| **Call during render**     | `call()` invoked directly in the component body         | Move to an event handler, `useEffect`, or callback                         |
+| **Registration churn**     | A function is re-registered rapidly (>3×/sec)           | Wrap the function in `useCallback()` before passing to `useTunnelFunction` |
 
 ## License
 

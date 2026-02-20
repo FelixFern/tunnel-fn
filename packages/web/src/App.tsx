@@ -4,7 +4,7 @@ import { Example } from "./components/Example";
 import ExamplePreview from "./components/Example/ExamplePreview";
 import { Alert, AlertTitle } from "./components/ui/alert";
 import { Badge } from "./components/ui/badge";
-import BlockChunk from "./components/ui/block-chunk";
+import InstallBlock from "./components/ui/install-block";
 import { Toaster } from "./components/ui/sonner";
 
 import { Analytics } from "@vercel/analytics/react";
@@ -35,7 +35,7 @@ function App() {
             Type-safe function tunneling across React components via context. No
             more prop drilling callbacks.
           </p>
-          <BlockChunk code="npm install tunnel-fn@latest"></BlockChunk>
+          <InstallBlock />
           <ExamplePreview />
         </div>
         <div className="items-center justify-center flex-grow w-full overflow-auto md:flex">

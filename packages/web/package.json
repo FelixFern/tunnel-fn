@@ -28,7 +28,7 @@
     "sonner": "^1.4.41",
     "tailwind-merge": "^2.3.0",
     "tailwindcss-animate": "^1.0.7",
-    "tunnel-fn": "workspace:*"
+    "@felixfern/tunnel-fn": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^19.0.1",
