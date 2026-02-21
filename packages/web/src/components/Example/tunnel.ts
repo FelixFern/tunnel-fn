@@ -1,9 +1,9 @@
 import { createTunnel } from "@felixfern/tunnel-fn";
 
-type ExampleTunnelMap = {
-	funcA: () => void;
-	funcB: (number: number) => void;
+type DemoTunnelMap = {
+	greet: (message: string) => void;
+	increment: (amount: number) => void;
 };
 
 export const { TunnelProvider, useTunnel, useTunnelFunction } =
-	createTunnel<ExampleTunnelMap>();
+	createTunnel<DemoTunnelMap>();

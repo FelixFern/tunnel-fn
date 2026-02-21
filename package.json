@@ -2,15 +2,15 @@
   "name": "tunnel-fn-monorepo",
   "private": true,
   "scripts": {
-    "dev": "pnpm --filter tunnel-fn-web dev",
+    "dev": "pnpm --filter @felixfern/tunnel-fn-web dev",
     "build": "pnpm -r build",
     "build:lib": "pnpm --filter @felixfern/tunnel-fn build",
-    "build:web": "pnpm --filter tunnel-fn-web build",
+    "build:web": "pnpm --filter @felixfern/tunnel-fn-web build",
     "test": "pnpm --filter @felixfern/tunnel-fn test",
     "test:watch": "pnpm --filter @felixfern/tunnel-fn test:watch",
     "lint": "pnpm -r lint"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }

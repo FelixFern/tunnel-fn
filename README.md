@@ -1,4 +1,4 @@
-# tunnel-fn
+# @felixfern/tunnel-fn
 
 [![npm](https://img.shields.io/npm/v/@felixfern/tunnel-fn)](https://www.npmjs.com/package/@felixfern/tunnel-fn)
 

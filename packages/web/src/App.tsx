@@ -1,47 +1,67 @@
-import { ExclamationTriangleIcon } from "@radix-ui/react-icons";
-import "./App.css";
-import { Example } from "./components/Example";
-import ExamplePreview from "./components/Example/ExamplePreview";
-import { Alert, AlertTitle } from "./components/ui/alert";
-import { Badge } from "./components/ui/badge";
-import InstallBlock from "./components/ui/install-block";
-import { Toaster } from "./components/ui/sonner";
-
 import { Analytics } from "@vercel/analytics/react";
+import { Github, Package } from "lucide-react";
+import { Link, Outlet } from "react-router-dom";
 
 function App() {
   return (
-    <div className="relative w-screen min-w-0 min-h-screen">
+    <div className="min-h-screen">
       <Analytics />
-      <Toaster />
-      <div className="dotted"></div>
-      <div className="flex flex-col w-screen min-h-screen gap-4 p-4 ustify-center md:gap-16 md:p-16 md:flex-row">
-        <div className="flex flex-col w-full gap-4 md:justify-center md:w-4/5 text-balance">
-          <div>
-            <Alert variant={"destructive"} className="mb-6">
-              <ExclamationTriangleIcon className="w-4 h-4" />
-              <AlertTitle>
-                Not battle-tested in production, please be careful.
-              </AlertTitle>
-            </Alert>
-            <h1 className="flex items-center justify-center gap-2 font-mono text-4xl font-bold md:justify-start">
-              <img src="./tunnel-fn.svg" className="w-16 h-16"></img>
-              <div className="flex flex-col">
-                tunnel-fn <Badge className="w-fit">v1.0.0</Badge>
-              </div>
-            </h1>
+
+      <header className="border-b border-zinc-900">
+        <div className="flex items-center justify-between max-w-4xl px-6 py-4 mx-auto">
+          <div className="flex items-center gap-3">
+            <Link to="/" className="flex items-center gap-3">
+              <img src="./tunnel-fn.svg" className="size-7" alt="tunnel-fn" />
+
+              <span className="font-mono text-sm font-semibold">
+                <span className="text-zinc-500">@felixfern</span>/tunnel-fn
+              </span>
+            </Link>
           </div>
-          <p className="w-full text-center md:w-3/4 md:text-left">
-            Type-safe function tunneling across React components via context. No
-            more prop drilling callbacks.
-          </p>
-          <InstallBlock />
-          <ExamplePreview />
+          <div className="flex items-center gap-4">
+            <Link
+              to="/docs"
+              className="text-sm transition-colors text-zinc-500 hover:text-zinc-300"
+            >
+              Docs
+            </Link>
+            <a
+              href="https://www.npmjs.com/package/@felixfern/tunnel-fn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors rounded-md text-zinc-500 hover:text-zinc-300"
+              aria-label="npm"
+            >
+              <Package size={18} />
+            </a>
+            <a
+              href="https://github.com/FelixFern/tunnel-fn"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="transition-colors rounded-md text-zinc-500 hover:text-zinc-300"
+              aria-label="GitHub"
+            >
+              <Github size={18} />
+            </a>
+          </div>
         </div>
-        <div className="items-center justify-center flex-grow w-full overflow-auto md:flex">
-          <Example />
-        </div>
-      </div>
+      </header>
+
+      <main>
+        <Outlet />
+      </main>
+
+      <footer className="py-8 text-xs text-center border-t border-zinc-900 text-zinc-600">
+        Built by{" "}
+        <a
+          href="https://github.com/FelixFern"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="transition-colors text-zinc-400 hover:text-white"
+        >
+          Felix Fernando
+        </a>
+      </footer>
     </div>
   );
 }

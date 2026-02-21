@@ -251,7 +251,7 @@ describe("Error handling", () => {
 
     expect(() => {
       renderHook(() => useTunnel());
-    }).toThrow("[tunnel-fn]");
+    }).toThrow("[@felixfern/tunnel-fn]");
 
     spy.mockRestore();
   });
@@ -262,7 +262,7 @@ describe("Error handling", () => {
 
     expect(() => {
       renderHook(() => useTunnelFunction("greet", (_name: string) => "hi"));
-    }).toThrow("[tunnel-fn]");
+    }).toThrow("[@felixfern/tunnel-fn]");
 
     spy.mockRestore();
   });
@@ -584,7 +584,8 @@ describe("Dev warnings", () => {
 
     const tunnelWarnings = warnSpy.mock.calls.filter(
       (args: unknown[]) =>
-        typeof args[0] === "string" && args[0].includes("[tunnel-fn]"),
+        typeof args[0] === "string" &&
+        args[0].includes("[@felixfern/tunnel-fn]"),
     );
     expect(tunnelWarnings).toHaveLength(0);
   });
