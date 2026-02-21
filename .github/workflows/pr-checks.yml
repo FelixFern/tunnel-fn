@@ -8,6 +8,8 @@ jobs:
   test:
     name: Unit Tests
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout repo
@@ -32,8 +34,105 @@ jobs:
         run: pnpm run build
 
       - name: Run tests
+        id: tests
         working-directory: packages/core
-        run: pnpm run test
+        run: |
+          pnpm run test -- --reporter=verbose --reporter=json --outputFile=test-results.json 2>&1 | tee test-output.txt
+          echo "EXIT_CODE=${PIPESTATUS[0]}" >> $GITHUB_OUTPUT
+
+      - name: Build test report
+        if: always()
+        working-directory: packages/core
+        run: |
+          REPORT="## Unit Test Results"
+          REPORT="${REPORT}\n"
+
+          if [ -f test-results.json ]; then
+            TOTAL=$(jq '.numTotalTests // 0' test-results.json)
+            PASSED=$(jq '.numPassedTests // 0' test-results.json)
+            FAILED=$(jq '.numFailedTests // 0' test-results.json)
+            DURATION=$(jq '.startTime as $s | .testResults | map(.endTime // $s) | max | . - $s | . / 1000 | floor' test-results.json 2>/dev/null || echo "?")
+
+            if [ "$FAILED" -eq 0 ]; then
+              REPORT="${REPORT}\n**Status:** Passed"
+            else
+              REPORT="${REPORT}\n**Status:** Failed"
+            fi
+
+            REPORT="${REPORT}\n"
+            REPORT="${REPORT}\n| Total | Passed | Failed | Duration |"
+            REPORT="${REPORT}\n|-------|--------|--------|----------|"
+            REPORT="${REPORT}\n| ${TOTAL} | ${PASSED} | ${FAILED} | ${DURATION}s |"
+
+            # List failed tests if any
+            FAILED_NAMES=$(jq -r '.testResults[] | select(.status == "failed") | .assertionResults[]? | select(.status == "failed") | "- \(.ancestorTitles | join(" > ")) > \(.title)"' test-results.json 2>/dev/null)
+            if [ -n "$FAILED_NAMES" ]; then
+              REPORT="${REPORT}\n"
+              REPORT="${REPORT}\n<details><summary>Failed tests</summary>"
+              REPORT="${REPORT}\n"
+              REPORT="${REPORT}\n\`\`\`"
+              REPORT="${REPORT}\n${FAILED_NAMES}"
+              REPORT="${REPORT}\n\`\`\`"
+              REPORT="${REPORT}\n</details>"
+            fi
+          else
+            REPORT="${REPORT}\n**Status:** Error — no test results found"
+            if [ -f test-output.txt ]; then
+              OUTPUT=$(tail -20 test-output.txt)
+              REPORT="${REPORT}\n"
+              REPORT="${REPORT}\n<details><summary>Output</summary>"
+              REPORT="${REPORT}\n"
+              REPORT="${REPORT}\n\`\`\`"
+              REPORT="${REPORT}\n${OUTPUT}"
+              REPORT="${REPORT}\n\`\`\`"
+              REPORT="${REPORT}\n</details>"
+            fi
+          fi
+
+          echo -e "$REPORT" >> $GITHUB_STEP_SUMMARY
+          echo -e "$REPORT" > /tmp/test-report.md
+
+      - name: Post or update test report comment
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('/tmp/test-report.md', 'utf8');
+            const marker = '<!-- unit-test-report -->';
+            const commentBody = `${marker}\n${body}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody,
+              });
+            }
+
+      - name: Fail if tests failed
+        if: always()
+        run: |
+          if [ "${{ steps.tests.outputs.EXIT_CODE }}" != "0" ]; then
+            echo "Tests failed"
+            exit 1
+          fi
 
   package-size:
     name: Package Size

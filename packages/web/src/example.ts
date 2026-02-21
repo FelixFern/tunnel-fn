@@ -1,75 +1,43 @@
-export const ExampleSetupCode = `
-import { createTunnel } from "@felixfern/tunnel-fn";
+export const setupCode = `import { createTunnel } from "@felixfern/tunnel-fn";
 
-type MyTunnelMap = {
-  funcA: () => void;
-  funcB: (number: number) => void;
+type DemoTunnelMap = {
+  greet: (message: string) => void;
+  increment: (amount: number) => void;
 };
 
 export const { TunnelProvider, useTunnel, useTunnelFunction } =
-  createTunnel<MyTunnelMap>();
-`;
+  createTunnel<DemoTunnelMap>();`;
 
-export const ExampleAppCode = `
-import { TunnelProvider } from "./tunnel";
-import ComponentA from "./components/ComponentA";
-import ComponentB from "./components/ComponentB";
+export const usageCode = `// ComponentA — registers "greet", calls "increment"
+function ComponentA() {
+  const { call } = useTunnel();
 
-function App() {
+  useTunnelFunction("greet", (message) => {
+    console.log("ComponentA received:", message);
+  });
+
   return (
-    <TunnelProvider>
-      <ComponentA />
-      <ComponentB />
-    </TunnelProvider>
+    <button onClick={() => call("increment", 1)}>
+      call("increment", 1)
+    </button>
   );
 }
 
-export default App;
-`;
-
-export const ExampleComponentA = `
-import { useTunnel, useTunnelFunction } from "./tunnel";
-
-const ComponentA = () => {
-  const { call } = useTunnel();
-
-  useTunnelFunction("funcA", () => {
-    toast.success("Called FuncA");
-  });
-
-  return (
-    <div>
-      <Button onClick={() => call("funcA")}>Call FuncA</Button>
-      <Button onClick={() => call("funcB", 1)}>
-        Call FuncB
-      </Button>
-    </div>
-  );
-};
-
-export default ComponentA;
-`;
-
-export const ExampleComponentB = `
-import { useTunnel, useTunnelFunction } from "./tunnel";
-
-const ComponentB = () => {
+// ComponentB — registers "increment", calls "greet"
+function ComponentB() {
   const [counter, setCounter] = useState(0);
   const { call } = useTunnel();
 
-  useTunnelFunction("funcB", (number: number) => {
-    setCounter(counter + 1);
-    toast.success(\`Called FuncB with parameter: \${number}\`);
+  useTunnelFunction("increment", (amount) => {
+    setCounter((c) => c + amount);
   });
 
   return (
-    <div>
-      <Button onClick={() => call("funcB", 1)}>Call FuncB</Button>
-      <Button onClick={() => call("funcA")}>Call FuncA</Button>
+    <>
       <p>Counter: {counter}</p>
-    </div>
+      <button onClick={() => call("greet", "Hi from B!")}>
+        call("greet", "Hi from B!")
+      </button>
+    </>
   );
-};
-
-export default ComponentB;
-`;
+}`;
