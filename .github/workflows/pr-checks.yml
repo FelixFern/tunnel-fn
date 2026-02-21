@@ -38,6 +38,8 @@ jobs:
   package-size:
     name: Package Size
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
 
     steps:
       - name: Checkout repo
@@ -62,19 +64,20 @@ jobs:
         run: pnpm run build
 
       - name: Calculate package size
+        id: size
         working-directory: packages/core
         run: |
-          echo "## Package Size Report" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          REPORT="## 📦 Package Size Report"
+          REPORT="${REPORT}\n"
 
           # Total dist size
           TOTAL=$(du -sh dist | cut -f1)
-          echo "**Total dist size:** \`$TOTAL\`" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
+          REPORT="${REPORT}\n**Total dist size:** \`$TOTAL\`"
+          REPORT="${REPORT}\n"
 
           # Individual file sizes
-          echo "| File | Size | Gzipped |" >> $GITHUB_STEP_SUMMARY
-          echo "|------|------|---------|" >> $GITHUB_STEP_SUMMARY
+          REPORT="${REPORT}\n| File | Size | Gzipped |"
+          REPORT="${REPORT}\n|------|------|---------|"
 
           for file in dist/*.js dist/*.cjs; do
             if [ -f "$file" ]; then
@@ -82,20 +85,26 @@ jobs:
               GZIP=$(gzip -c "$file" | wc -c | xargs)
               SIZE_KB=$(echo "scale=2; $SIZE / 1024" | bc)
               GZIP_KB=$(echo "scale=2; $GZIP / 1024" | bc)
-              echo "| \`$(basename $file)\` | ${SIZE_KB} kB | ${GZIP_KB} kB |" >> $GITHUB_STEP_SUMMARY
+              REPORT="${REPORT}\n| \`$(basename $file)\` | ${SIZE_KB} kB | ${GZIP_KB} kB |"
             fi
           done
 
-          echo "" >> $GITHUB_STEP_SUMMARY
+          REPORT="${REPORT}\n"
 
           # Simulated pack size (what npm would publish)
-          PACK_SIZE=$(pnpm pack --pack-destination /tmp 2>&1 | tail -1)
+          pnpm pack --pack-destination /tmp 2>&1
           TARBALL=$(ls -1 /tmp/felixfern-tunnel-fn-*.tgz 2>/dev/null | head -1)
           if [ -f "$TARBALL" ]; then
             TARBALL_SIZE=$(wc -c < "$TARBALL" | xargs)
             TARBALL_KB=$(echo "scale=2; $TARBALL_SIZE / 1024" | bc)
-            echo "**Packed tarball size:** \`${TARBALL_KB} kB\`" >> $GITHUB_STEP_SUMMARY
+            REPORT="${REPORT}\n**Packed tarball size:** \`${TARBALL_KB} kB\`"
           fi
+
+          # Write to step summary
+          echo -e "$REPORT" >> $GITHUB_STEP_SUMMARY
+
+          # Write to file for the comment step
+          echo -e "$REPORT" > /tmp/size-report.md
 
           # Print to logs too
           echo "=== Package Size Report ==="
@@ -104,3 +113,36 @@ jobs:
           if [ -f "$TARBALL" ]; then
             echo "Packed tarball: ${TARBALL_KB} kB"
           fi
+
+      - name: Post or update PR comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const body = fs.readFileSync('/tmp/size-report.md', 'utf8');
+            const marker = '<!-- package-size-report -->';
+            const commentBody = `${marker}\n${body}`;
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(c => c.body.includes(marker));
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body: commentBody,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body: commentBody,
+              });
+            }
