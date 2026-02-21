@@ -1,0 +1,106 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        working-directory: packages/core
+        run: pnpm run build
+
+      - name: Run tests
+        working-directory: packages/core
+        run: pnpm run test
+
+  package-size:
+    name: Package Size
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        working-directory: packages/core
+        run: pnpm run build
+
+      - name: Calculate package size
+        working-directory: packages/core
+        run: |
+          echo "## Package Size Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Total dist size
+          TOTAL=$(du -sh dist | cut -f1)
+          echo "**Total dist size:** \`$TOTAL\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Individual file sizes
+          echo "| File | Size | Gzipped |" >> $GITHUB_STEP_SUMMARY
+          echo "|------|------|---------|" >> $GITHUB_STEP_SUMMARY
+
+          for file in dist/*.js dist/*.cjs; do
+            if [ -f "$file" ]; then
+              SIZE=$(wc -c < "$file" | xargs)
+              GZIP=$(gzip -c "$file" | wc -c | xargs)
+              SIZE_KB=$(echo "scale=2; $SIZE / 1024" | bc)
+              GZIP_KB=$(echo "scale=2; $GZIP / 1024" | bc)
+              echo "| \`$(basename $file)\` | ${SIZE_KB} kB | ${GZIP_KB} kB |" >> $GITHUB_STEP_SUMMARY
+            fi
+          done
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Simulated pack size (what npm would publish)
+          PACK_SIZE=$(pnpm pack --pack-destination /tmp 2>&1 | tail -1)
+          TARBALL=$(ls -1 /tmp/felixfern-tunnel-fn-*.tgz 2>/dev/null | head -1)
+          if [ -f "$TARBALL" ]; then
+            TARBALL_SIZE=$(wc -c < "$TARBALL" | xargs)
+            TARBALL_KB=$(echo "scale=2; $TARBALL_SIZE / 1024" | bc)
+            echo "**Packed tarball size:** \`${TARBALL_KB} kB\`" >> $GITHUB_STEP_SUMMARY
+          fi
+
+          # Print to logs too
+          echo "=== Package Size Report ==="
+          echo "Total dist: $TOTAL"
+          ls -lh dist/*.js dist/*.cjs 2>/dev/null
+          if [ -f "$TARBALL" ]; then
+            echo "Packed tarball: ${TARBALL_KB} kB"
+          fi

@@ -27,7 +27,7 @@ function App() {
             <h1 className="flex items-center justify-center gap-2 font-mono text-4xl font-bold md:justify-start">
               <img src="./tunnel-fn.svg" className="w-16 h-16"></img>
               <div className="flex flex-col">
-                tunnel-fn <Badge className="w-fit">v1.0.0</Badge>
+                tunnel-fn <Badge className="w-fit">v2.0.1</Badge>
               </div>
             </h1>
           </div>

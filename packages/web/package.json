@@ -1,5 +1,5 @@
 {
-  "name": "tunnel-fn-web",
+  "name": "@felixfern/tunnel-fn-web",
   "private": true,
   "version": "0.0.0",
   "type": "module",
